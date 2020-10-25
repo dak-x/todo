@@ -1,8 +1,9 @@
-extern crate std;
-extern crate structopt;
-const PATH: &str = ".config/todo/todo_list.txt";
-
+mod cli;
+use todo::*;
+use structopt::StructOpt;
+use cli::*;
 
 fn main() {
-    println!("Hello, world!");
+    let _x = TodoCli::from_args();
+    print!("{:?}",_x)
 }
