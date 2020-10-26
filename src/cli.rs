@@ -5,12 +5,13 @@ use structopt::StructOpt;
 pub struct TodoCli {
     #[structopt(subcommand)]
     sbcmd: Option<SbCmd>,
-
     /// Select to Display all the Tasks
     #[structopt(short, long)]
     all: bool,
-    #[structopt(long)]
-    author: bool,
+    // TODO: Maybe add a author option
+    // Change name of the author
+    // #[structopt(long)]
+    // author: Option<String>,
 }
 
 #[derive(Debug, StructOpt)]
@@ -29,7 +30,7 @@ enum SbCmd {
 // struct ShowArgs {}
 
 #[derive(Debug, StructOpt)]
-#[structopt(name = "ToDo Add", about ="Add a new Task in your ToDo List")]
+#[structopt(name = "ToDo Add", about = "Add a new Task in your ToDo List")]
 struct AddArgs {
     /// Title for the Task
     title: String,
@@ -38,14 +39,18 @@ struct AddArgs {
     /// Deadline in Number of days.
     #[structopt(long, default_value = "-1")]
     deadline: i32,
-
     /// Set Urgent Priority
-    #[structopt(short)]
+    #[structopt(short, conflicts_with("m"))]
     u: bool,
     /// Set Moderate Priority
-    #[structopt(short)]
+    #[structopt(short, conflicts_with("u"))]
     m: bool,
 }
 
 #[derive(Debug, StructOpt)]
-struct RemoveArgs {}
+#[structopt(name = "ToDo Remove", about = "Remove a task from your ToDo List")]
+struct RemoveArgs {
+    /// Id's for tasks to remove from the list
+    title: Vec<String>,
+    // id: Option<u32>,
+}
