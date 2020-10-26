@@ -1,9 +1,14 @@
 mod cli;
-use todo::*;
-use structopt::StructOpt;
 use cli::*;
+use structopt::StructOpt;
+use todo::*;
 
-fn main() {
+
+
+fn main() -> Result<(), Box<dyn std::error::Error>> {
     let _x = TodoCli::from_args();
-    print!("{:?}",_x)
+    let todo_list = TodoList::from_config()?;
+    _x.handle(todo_list);
+    Ok(())
 }
+
