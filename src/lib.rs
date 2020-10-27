@@ -1,13 +1,13 @@
 #![allow(dead_code, unused)]
-
-pub const CONFIG_PATH: &str = "todo_list.json";
+// pub const CONFIG_PATH: &str = ".config/todo/todo_list.json";
 
 use chrono::prelude::*;
 use serde::{Deserialize, Serialize};
 use serde_json::from_str;
+use std::env;
 use std::fmt::Display;
 
-type Time = DateTime<Local>;
+type Time = NaiveDate;
 
 #[derive(Clone, Debug, Serialize, Deserialize, Default)]
 pub struct TodoList {
@@ -18,15 +18,22 @@ pub struct TodoList {
 impl Display for TodoList {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         use colored::Colorize;
-        writeln!(f, "{}'s {}", self.author.bright_yellow().bold(), "Todo:".bright_yellow().bold());
+        writeln!(
+            f,
+            "-- -- -- -- -- -- --\n    {}'s {}",
+            self.author.bright_yellow().bold(),
+            "Todo:".bright_yellow().bold()
+        );
+
         for task in &self.tasks {
-            writeln!(f, "       {}", task);
+            writeln!(f, "   {}", task);
         }
-        if self.tasks.is_empty(){
-            writeln!{f, "{}" ,"Looks like you are good! No Tasks!!!".magenta()};
-            write! {f,"{}","     -- -- -- -- -- -- --".green()};
+
+        if self.tasks.is_empty() {
+            writeln! {f, "{}" ,"    Looks like you are good! No Tasks!!!".yellow()};
+            write! {f,"{}","-- -- -- -- -- -- --"};
         }
-        write!(f,"")
+        write!(f, "")
     }
 }
 
@@ -40,9 +47,9 @@ impl Drop for TodoList {
 struct TodoTask {
     id: usize,
     title: String,
-    created: Time,
+    created: NaiveDate,
     desc: String,
-    deadline: Option<Time>,
+    deadline: Option<NaiveDate>,
     priority: Priority,
 }
 
@@ -50,17 +57,18 @@ impl Display for TodoTask {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         use colored::Colorize;
         let _col: &str = match self.priority {
-            Priority::URGENT => "red",
+            Priority::URGENT => "bright red",
             Priority::MODERATE => "green",
             Priority::CHILL => "cyan",
             Priority::NONE => "white",
         };
         write!(
             f,
-            "[{}] {}: {}",
+            "[{}] {}: {}  {}",
             self.id.to_string().color(_col),
             self.title.color(_col),
-            self.desc.color(_col)
+            self.desc.color(_col),
+            self.created.format("%v").to_string().color("white"),
         )
     }
 }
@@ -139,11 +147,38 @@ impl TodoList {
         let _t = TodoList::default();
         _t.to_file(CONFIG_PATH)
     }
+
+    // Print a subset of the tasks randomly based on priority
+    pub fn print_till(&self, till: u32) {
+        use Priority::*;
+        let up_bnd: Priority = match till {
+            x if x < 4 => URGENT,
+            x if x < 6 => MODERATE,
+            x if x < 8 => CHILL,
+            _ => NONE,
+        };
+
+        use colored::Colorize;
+        println!(
+            "{}'s {}",
+            self.author.bright_yellow().bold(),
+            "Todo:".bright_yellow().bold()
+        );
+        for task in &self.tasks {
+            if task.priority <= up_bnd {
+                println!("   {}", task);
+            }
+        }
+        if self.tasks.is_empty() {
+            println! {"{}" ,"Looks like you are good! No Tasks!!!".yellow()};
+            print! {"{}","     -- -- -- -- -- -- --".green()};
+        }
+    }
 }
 
 impl TodoTask {
     fn new(title: String, desc: String, _priority: Option<Priority>, _deadline: usize) -> Self {
-        let created = Local::now();
+        let created: NaiveDate = Local::today().naive_local();
         let deadline: Option<Time> = None;
         if _deadline > 0 {
             // TODO: Manage the deadline thing
@@ -164,3 +199,4 @@ impl TodoTask {
         t1.priority.cmp(&t2.priority)
     }
 }
+

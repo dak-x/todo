@@ -63,7 +63,12 @@ struct RemoveArgs {
 
 impl TodoCli {
     /// Decode the command given in cli_args.
-    pub fn handle(self, mut todo_list: TodoList) {
+    pub fn handle(self) -> Result<(), Box<dyn std::error::Error>> {
+        let mut todo_list = match self.sbcmd {
+            Some(SbCmd::Reset) => TodoList::default(),
+            _ => TodoList::from_config()?,
+        };
+
         match self.sbcmd {
             Some(SbCmd::Show) => println!("{}", todo_list),
             Some(SbCmd::Add(args)) => {
@@ -92,6 +97,11 @@ impl TodoCli {
             Some(SbCmd::Reset) => {
                 todo_list = TodoList::default();
             }
+            None if self.author.is_none() => {
+                use rand::random;
+                let x = random::<u32>() % 10;
+                todo_list.print_till(x);
+            }
             _ => {}
         }
 
@@ -99,5 +109,6 @@ impl TodoCli {
             Some(x) => todo_list.author = x.to_string(),
             _ => {}
         }
+        Ok(())
     }
 }
