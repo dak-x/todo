@@ -2,7 +2,11 @@
 use structopt::StructOpt;
 use todo::*;
 
-#[structopt(about = "ToDo List Manager written in Rust.")]
+#[structopt(
+    name = "Todo",
+    about = "Todo List Manager written in Rust. Use this tool to add ",
+    version = "1.0.0"
+)]
 #[derive(StructOpt, Debug)]
 pub struct TodoCli {
     #[structopt(subcommand)]
@@ -10,7 +14,6 @@ pub struct TodoCli {
     /// Select to Display all the Tasks
     #[structopt(short, long)]
     all: bool,
-
     // Change name of the author
     #[structopt(long)]
     author: Option<String>,
@@ -18,18 +21,20 @@ pub struct TodoCli {
 
 #[derive(Debug, StructOpt)]
 enum SbCmd {
-    /// Display all the tasks
+    #[structopt(name = "show", about = "Show the list of all Tasks")]
     Show,
-    /// Add a new Todo task
+
+    #[structopt(name = "add", about = "Add a new Task")]
     Add(AddArgs),
-    /// Complete/Remove a task
+
+    #[structopt(name = "remove", about = "Remove a bunch of Tasks")]
     Remove(RemoveArgs),
-    /// Reset the list
+
+    #[structopt(name = "RESET", about = "Clear all your Tasks")]
     Reset,
 }
 
 #[derive(Debug, StructOpt)]
-#[structopt(name = "ToDo Add", about = "Add a new Task in your ToDo List")]
 struct AddArgs {
     /// Title for the Task
     title: String,
@@ -57,6 +62,7 @@ struct RemoveArgs {
 }
 
 impl TodoCli {
+    /// Decode the command given in cli_args.
     pub fn handle(self, mut todo_list: TodoList) {
         match self.sbcmd {
             Some(SbCmd::Show) => println!("{}", todo_list),

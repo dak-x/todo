@@ -1,6 +1,6 @@
 #![allow(dead_code, unused)]
 
-const CONFIG_PATH: &str = "todo_list.json";
+pub const CONFIG_PATH: &str = "todo_list.json";
 
 use chrono::prelude::*;
 use serde::{Deserialize, Serialize};
@@ -57,7 +57,7 @@ impl Display for TodoTask {
         };
         write!(
             f,
-            "[{}]{}: {}",
+            "[{}] {}: {}",
             self.id.to_string().color(_col),
             self.title.color(_col),
             self.desc.color(_col)
@@ -74,10 +74,11 @@ pub enum Priority {
 }
 
 impl TodoList {
+    // Get the todolist stored in the config json
     pub fn from_config() -> Result<Self, Box<dyn std::error::Error>> {
         TodoList::from_path(CONFIG_PATH)
     }
-
+    // Get the todolist from any specified json
     fn from_path(path: &str) -> Result<Self, Box<dyn std::error::Error>> {
         use std::fs::File;
         use std::io::prelude::*;
@@ -87,7 +88,7 @@ impl TodoList {
         file.read_to_string(&mut contents)?;
         Ok(serde_json::from_str(&contents)?)
     }
-
+    // Write the contents of the todolist to path.json
     pub fn to_file(&self, path: &str) -> Result<(), Box<dyn std::error::Error>> {
         use std::fs::File;
         use std::io::prelude::*;
@@ -126,8 +127,7 @@ impl TodoList {
         self.orderize();
         Ok(())
     }
-
-
+    /// Reassign the id order for the tasks
     fn orderize(&mut self) {
         for (i, x) in self.tasks.iter_mut().enumerate() {
             x.id = i;
@@ -146,7 +146,7 @@ impl TodoTask {
         let created = Local::now();
         let deadline: Option<Time> = None;
         if _deadline > 0 {
-            // TODO: ...@
+            // TODO: Manage the deadline thing
             // deadline = Some()
         }
         let priority = _priority.unwrap_or_else(|| Priority::NONE);
