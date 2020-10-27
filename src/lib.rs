@@ -20,7 +20,7 @@ impl Display for TodoList {
         use colored::Colorize;
         writeln!(
             f,
-            "-- -- -- -- -- -- --\n    {}'s {}",
+            "    {}'s {}",
             self.author.bright_yellow().bold(),
             "Todo:".bright_yellow().bold()
         );
@@ -30,8 +30,8 @@ impl Display for TodoList {
         }
 
         if self.tasks.is_empty() {
-            writeln! {f, "{}" ,"    Looks like you are good! No Tasks!!!".yellow()};
-            write! {f,"{}","-- -- -- -- -- -- --"};
+            writeln! {f, "{}" ,"    You are good. No Tasks!".yellow()};
+            write! {f,"{}","    -- -- -- -- -- -- --".green()};
         }
         write!(f, "")
     }
@@ -160,7 +160,7 @@ impl TodoList {
 
         use colored::Colorize;
         println!(
-            "{}'s {}",
+            " {}'s {}",
             self.author.bright_yellow().bold(),
             "Todo:".bright_yellow().bold()
         );
@@ -170,8 +170,8 @@ impl TodoList {
             }
         }
         if self.tasks.is_empty() {
-            println! {"{}" ,"Looks like you are good! No Tasks!!!".yellow()};
-            print! {"{}","     -- -- -- -- -- -- --".green()};
+            println! {"{}" ," You are good. No Tasks!".yellow()};
+            print! {"{}","-- -- -- -- -- -- --".green()};
         }
     }
 }
@@ -199,4 +199,3 @@ impl TodoTask {
         t1.priority.cmp(&t2.priority)
     }
 }
-
