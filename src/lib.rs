@@ -20,9 +20,9 @@ impl Display for TodoList {
         use colored::Colorize;
         writeln!(
             f,
-            "    {}'s {}",
-            self.author.bright_yellow().bold(),
-            "Todo:".bright_yellow().bold()
+            "    {} {}",
+            self.author.bright_yellow(),
+            "Todo:".bright_yellow()
         );
 
         for task in &self.tasks {
@@ -31,7 +31,6 @@ impl Display for TodoList {
 
         if self.tasks.is_empty() {
             writeln! {f, "{}" ,"    You are good. No Tasks!".yellow()};
-            write! {f,"{}","    -- -- -- -- -- -- --".green()};
         }
         write!(f, "")
     }
@@ -160,9 +159,9 @@ impl TodoList {
 
         use colored::Colorize;
         println!(
-            " {}'s {}",
-            self.author.bright_yellow().bold(),
-            "Todo:".bright_yellow().bold()
+            " {} {}",
+            self.author.bright_yellow(),
+            "Todo:".bright_yellow()
         );
         for task in &self.tasks {
             if task.priority <= up_bnd {
@@ -171,7 +170,6 @@ impl TodoList {
         }
         if self.tasks.is_empty() {
             println! {"{}" ," You are good. No Tasks!".yellow()};
-            print! {"{}","-- -- -- -- -- -- --".green()};
         }
     }
 }
@@ -199,3 +197,4 @@ impl TodoTask {
         t1.priority.cmp(&t2.priority)
     }
 }
+const CONFIG_PATH: &str = "/home/anthrax/.config/todo/todo.json";
