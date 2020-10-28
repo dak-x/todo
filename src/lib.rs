@@ -18,21 +18,23 @@ pub struct TodoList {
 impl Display for TodoList {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         use colored::Colorize;
-        writeln!(
-            f,
-            "    {} {}",
-            self.author.bright_yellow(),
-            "Todo:".bright_yellow()
-        );
+        self.print_till(100);
+        write!{f,""}
+        // writeln!(
+        //     f,
+        //     "{} {}",
+        //     self.author.bright_yellow(),
+        //     "Todo:".bright_yellow()
+        // );
 
-        for task in &self.tasks {
-            writeln!(f, "   {}", task);
-        }
+        // for task in &self.tasks {
+        //     writeln!(f, "   {}", task);
+        // }
 
-        if self.tasks.is_empty() {
-            writeln! {f, "{}" ,"    You are good. No Tasks!".yellow()};
-        }
-        write!(f, "")
+        // if self.tasks.is_empty() {
+        //     writeln! {f, "{}" ," You are good. No Tasks!".yellow()};
+        // }
+        // write!(f, "")
     }
 }
 
